@@ -33,6 +33,10 @@ while True:
     if snail_rect.right <= 0:
         snail_rect.left = 800
     screen.blit(player_surf, player_rect)
+
+    if player_rect.colliderect(snail_rect):
+        print("my balls")
+
     pygame.display.update() 
     clock.tick(60)
 
