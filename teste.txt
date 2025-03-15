@@ -1,7 +1,0 @@
-preciso desenhar duas linhas
-
-no primeiro clique pegar a posição 1
-
-no segundo clique pegar a posição 2
-
-para tal usar event, se o segundo clique não tiver ocorrido, o desenho sera até o final do mouse

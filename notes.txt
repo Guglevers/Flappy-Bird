@@ -1,7 +1,0 @@
-no pygame podemos criar rectangles, que basicamente permitem que eu crie de maneira simples uma colisão para o meu jogo
-
-no fim teremos uma img que tem um rect, e isso nos da algo muito melhor para trabalhar, no fim das contas a classe sprite junta esses dois em algo unico
-
-rectangle é um tipo que permite maior ontrole do que estamos colocando no jogo
-
-ele funciona com varias coordenadas juntas para que voce possa manipulalo de maneira mais apropriada
