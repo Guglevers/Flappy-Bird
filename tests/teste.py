@@ -1,32 +1,20 @@
 import pygame
 
-pygame.init()
-
-clock = pygame.time.Clock()
-
-WIDTH = 800
-HEIGHT = 400
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-
-position_1 = ()
-position_2 = ()
+position_1 = None
+position_2 = None
 
 lines = []
 
-running = True
-while running:
+def draw_line(screen, events):
 
-    screen.fill("black")
+    global position_1, position_2, lines
 
     for line in lines:
         pygame.draw.line(screen, "yellow", line[0], line[1])
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    for event in events:
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             if not position_1:
                 position_1 = event.pos
 
@@ -43,8 +31,3 @@ while running:
     elif position_1 and position_2:
         pygame.draw.line(screen, "yellow", position_1, position_2, 6)
         lines.append((position_1, position_2))
-
-    pygame.display.update()
-    clock.tick(60)
-
-pygame.quit()

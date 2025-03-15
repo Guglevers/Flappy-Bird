@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from tests.teste import draw_line
 
 pygame.init()
 
@@ -24,7 +25,9 @@ player_rect = player_surf.get_rect(midbottom = (80, 300))
 cursor_surf = pygame.image.load("assets./aim.png").convert_alpha()
 
 while True:
-    for event in pygame.event.get():
+    events = pygame.event.get()
+
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
@@ -40,6 +43,9 @@ while True:
     screen.blit(player_surf, player_rect)
 
     pygame.draw.line(screen, "black", (0, 0), (800, 400), 1)
+
+    draw_line(screen, events)
+
     pygame.display.update() 
     clock.tick(60)
 
