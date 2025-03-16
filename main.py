@@ -1,75 +1,79 @@
 import pygame
+import random
 from sys import exit
-from tests.teste import draw_line
 
 pygame.init()
 
-game_active = True
+WIDTH = 450
+HEIGHT = 800
 
-screen = pygame.display.set_mode((800, 400))
-pygame.display.set_caption("Flappy Bird")
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+
 font = pygame.font.Font("assets/Pixeltype.ttf", 50)
 
-#surfs
-sky_surf = pygame.image.load("assets./Sky.png").convert()
-ground_surf = pygame.image.load("assets./ground.png").convert()
-ground_rect = ground_surf.get_rect(topleft = (0, 300))
-
-score_surf = font.render("Hello World!!", False, "black")
-score_rect = score_surf.get_rect(center = (400, 20))
-
-fail_surf = font.render("Tente Novamente", False, "black")
-fail_rect = fail_surf.get_rect(center = (400, 200))
-
-snail_surf = pygame.image.load("assets./snail./snail1.png").convert_alpha()
-snail_rect = snail_surf.get_rect(midbottom = (800, 300))
-
-player_surf = pygame.image.load("assets./player./player_walk_1.png").convert_alpha()
-player_rect = player_surf.get_rect(midbottom = (80, 300))
 player_gravity = 0
+player_y = 350
 
-cursor_surf = pygame.image.load("assets./aim.png").convert_alpha()
+pipe_height = random.randrange(60, 560)
+pipe_x = 450 
+pipe_y = -10
+
+score_value = 0
+
+running = True
 
 while True:
+
+    screen.fill("lightblue")    
 
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        
+        elif event.type == pygame.KEYDOWN:
+            if pygame.K_SPACE:
+                player_gravity = -13
+        
+    if running:
 
-        if event.type == pygame.KEYDOWN and player_rect.bottom == 300:
-            if event.key == pygame.K_SPACE:
-                player_gravity = -20
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-           if player_rect.collidepoint(event.pos) and player_rect.bottom == 300:
-               player_gravity = -20
+        score_surf = font.render(f"Score: {str(score_value).rjust(5, "0")}", False, "black")
+        score_rect = score_surf.get_rect(midleft = (20, 20))
 
-    if game_active:
-        screen.blit(sky_surf, (0, 0))
-        screen.blit(ground_surf, ground_rect)
+        player = pygame.draw.rect(screen, "yellow", (10, player_y, 50, 50))
+        player = pygame.draw.rect(screen, "black", (10, player_y, 50, 50), 10)
+
+        player_gravity += 0.5
+        player_y += player_gravity    
+
+        pipe0 = pygame.draw.rect(screen, "green", (pipe_x, pipe_y, 100, pipe_height))    
+        pipe1 = pygame.draw.rect(screen, "green", (pipe_x, pipe_height + 250, 100, 800))
+        
+        pipe2 = pygame.draw.rect(screen, "darkgreen", (pipe_x, pipe_y, 100, pipe_height), 10)    
+        pipe3 = pygame.draw.rect(screen, "darkgreen", (pipe_x, pipe_height + 250, 100, 800), 10)
+
+        pipes = [pipe0, pipe1, pipe2, pipe3]
+
         screen.blit(score_surf, score_rect)
 
-        screen.blit(snail_surf, snail_rect)
-        snail_rect.left -= 4
-        if snail_rect.right <= 0:
-            snail_rect.left = 800
+        pipe_x-=2
 
-        player_gravity += 1
-        player_rect.bottom += player_gravity
-        if player_rect.bottom >= 300:
-            player_rect.bottom = 300
-        
-        screen.blit(player_surf, player_rect)
+        if pipe_x == -100:
+            pipe_x = 450
+            pipe_height = random.randrange(60, 560)
+            score_value += 1
 
-        if snail_rect.colliderect(player_rect):
-            game_active = False
+        for pipe in pipes:
+            if player.colliderect(pipe):
+                running = False
 
-    else: 
-        screen.fill("black")
+        if player.top <= 0 or player.bottom >= 800:
+            running = False
 
+    else:
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -77,15 +81,31 @@ while True:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if fail_rect.collidepoint(event.pos):
-                    player_rect.midbottom = (80, 300)
                     player_gravity = 0
-                    snail_rect.left = 800
-                    game_active = True
-
-        pygame.draw.rect(screen, "white", fail_rect)
-        pygame.draw.rect(screen, "white", fail_rect, 10)
-        screen.blit(fail_surf, fail_rect)
+                    player_y = 350
+                    pipe_height = random.randrange(60, 560)
+                    pipe_x = 450 
+                    pipe_y = -10
+                    score_value = 0
+                    running = True
         
-    pygame.display.update() 
-    clock.tick(60)
+            if event.type == pygame.KEYDOWN:
+                if pygame.K_SPACE:
+                    player_gravity = 0
+                    player_y = 350
+                    pipe_height = random.randrange(60, 560)
+                    pipe_x = 450 
+                    pipe_y = -10
+                    score_value = 0
+                    running = True
 
+        fail_surf = font.render("Tentar Novamente", False, "black")
+        fail_rect = fail_surf.get_rect(center = (225, 350))
+        screen.blit(fail_surf, fail_rect)
+
+        score_surf = font.render(f"Score: {str(score_value).rjust(5, "0")}", False, "black")
+        score_rect = score_surf.get_rect(center = (225, 410))
+        screen.blit(score_surf, score_rect)
+
+    pygame.display.update()
+    clock.tick(60)
