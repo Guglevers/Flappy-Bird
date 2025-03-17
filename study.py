@@ -86,6 +86,8 @@ while True:
         pygame.draw.rect(screen, "white", fail_rect)
         pygame.draw.rect(screen, "white", fail_rect, 10)
         screen.blit(fail_surf, fail_rect)
+
+        draw_line(screen, events)
         
     pygame.display.update() 
     clock.tick(60)

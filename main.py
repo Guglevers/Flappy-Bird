@@ -1,6 +1,7 @@
 import pygame
-import random
 from sys import exit
+from classes.pipe import Pipe
+from classes.player import Player
 
 pygame.init()
 
@@ -12,12 +13,8 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font("assets/Pixeltype.ttf", 50)
 
-player_gravity = 0
-player_y = 350
-
-pipe_height = random.randrange(60, 560)
-pipe_x = 450 
-pipe_y = -10
+player = Player()
+pipe = Pipe()
 
 score_value = 0
 
@@ -34,43 +31,33 @@ while True:
             exit()
         
         elif event.type == pygame.KEYDOWN:
-            if pygame.K_SPACE:
-                player_gravity = -13
+            if event.key == pygame.K_SPACE:
+                player.jump()
         
     if running:
-
 
         score_surf = font.render(f"Score: {str(score_value).rjust(5, "0")}", False, "black")
         score_rect = score_surf.get_rect(midleft = (20, 20))
 
-        player = pygame.draw.rect(screen, "yellow", (10, player_y, 50, 50))
-        player = pygame.draw.rect(screen, "black", (10, player_y, 50, 50), 10)
+        player.draw(screen)
 
-        player_gravity += 0.5
-        player_y += player_gravity    
+        player.apply_gravity()    
 
-        pipe0 = pygame.draw.rect(screen, "green", (pipe_x, pipe_y, 100, pipe_height))    
-        pipe1 = pygame.draw.rect(screen, "green", (pipe_x, pipe_height + 250, 100, 800))
-        
-        pipe2 = pygame.draw.rect(screen, "darkgreen", (pipe_x, pipe_y, 100, pipe_height), 10)    
-        pipe3 = pygame.draw.rect(screen, "darkgreen", (pipe_x, pipe_height + 250, 100, 800), 10)
+        pipe.draw(screen)
 
-        pipes = [pipe0, pipe1, pipe2, pipe3]
+        pipe.move()
 
         screen.blit(score_surf, score_rect)
 
-        pipe_x-=2
-
-        if pipe_x == -100:
-            pipe_x = 450
-            pipe_height = random.randrange(60, 560)
+        if pipe.x == -100:
+            pipe = Pipe()
             score_value += 1
 
-        for pipe in pipes:
-            if player.colliderect(pipe):
+        for pipe_rect in pipe.get_rectangles():
+            if player.get_rect().colliderect(pipe_rect):
                 running = False
 
-        if player.top <= 0 or player.bottom >= 800:
+        if player.y <= 0 or player.y >= 800:
             running = False
 
     else:
@@ -81,21 +68,15 @@ while True:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if fail_rect.collidepoint(event.pos):
-                    player_gravity = 0
-                    player_y = 350
-                    pipe_height = random.randrange(60, 560)
-                    pipe_x = 450 
-                    pipe_y = -10
+                    player = Player()
+                    pipe = Pipe()
                     score_value = 0
                     running = True
         
             if event.type == pygame.KEYDOWN:
                 if pygame.K_SPACE:
-                    player_gravity = 0
-                    player_y = 350
-                    pipe_height = random.randrange(60, 560)
-                    pipe_x = 450 
-                    pipe_y = -10
+                    player = Player()
+                    pipe = Pipe() 
                     score_value = 0
                     running = True
 
