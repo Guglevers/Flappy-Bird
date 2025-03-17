@@ -1,9 +1,16 @@
 import pygame
 from sys import exit
-from classes.pipe import Pipe
-from classes.player import Player
+from game.pipe import Pipe
+from game.player import Player
 
 pygame.init()
+
+def reset_game():
+    global player, pipe, score_value, running
+    player = Player()
+    pipe = Pipe()
+    score_value = 0
+    running = True
 
 WIDTH = 450
 HEIGHT = 800
@@ -61,6 +68,13 @@ while True:
             running = False
 
     else:
+        fail_surf = font.render("Tentar Novamente", False, "black")
+        fail_rect = fail_surf.get_rect(center = (225, 350))
+        screen.blit(fail_surf, fail_rect)
+        score_surf = font.render(f"Score: {str(score_value).rjust(5, "0")}", False, "black")
+        score_rect = score_surf.get_rect(center = (225, 410))
+        screen.blit(score_surf, score_rect)
+
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -68,25 +82,11 @@ while True:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if fail_rect.collidepoint(event.pos):
-                    player = Player()
-                    pipe = Pipe()
-                    score_value = 0
-                    running = True
+                    reset_game()
         
             if event.type == pygame.KEYDOWN:
                 if pygame.K_SPACE:
-                    player = Player()
-                    pipe = Pipe() 
-                    score_value = 0
-                    running = True
-
-        fail_surf = font.render("Tentar Novamente", False, "black")
-        fail_rect = fail_surf.get_rect(center = (225, 350))
-        screen.blit(fail_surf, fail_rect)
-
-        score_surf = font.render(f"Score: {str(score_value).rjust(5, "0")}", False, "black")
-        score_rect = score_surf.get_rect(center = (225, 410))
-        screen.blit(score_surf, score_rect)
+                    reset_game()
 
     pygame.display.update()
     clock.tick(60)
