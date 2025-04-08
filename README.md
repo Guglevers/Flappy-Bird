@@ -40,3 +40,7 @@ This is just a fun side project I had — and the goal is just as the title says
   ```python
   import libThatDoThing  
   libThatDoThing.doThing()
+
+NOTE:
+Maybe the README is better than the game itself, does this say something about me?
+Nahhh
